@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { createContext, useContext, useEffect, useState } from "react"
 
 const initialState = {
@@ -6,12 +7,6 @@ const initialState = {
 }
 
 const ThemeProviderContext = createContext(initialState)
-
-ThemeProvider.propTypes = {
-    children: HTMLElement,
-    defaultTheme: String,
-    storageKey: String
-}
 
 export function ThemeProvider({
   children,

@@ -1,7 +1,7 @@
 export const DisplayOptions = {
-  BY_STATUS: "ByStatus",
-  BY_USER: "ByUser",
-  BY_PRIORITY: "ByPriority",
+  BY_STATUS: "status",
+  BY_USER: "userId",
+  BY_PRIORITY: "priority",
 };
 
 export const SortOptions = {

@@ -1,5 +1,5 @@
+import useTicketStore from "../hooks/useTicketStore";
 import { DisplayOptions } from "../lib/constants";
-import { useDisplayOptionsStore } from "../stores/displayOptionsStore";
 
 import {
   Select,
@@ -12,12 +12,22 @@ import {
 } from "./ui/select";
 
 const FilterOptions = () => {
-  const { displayOption, setDisplayOption } = useDisplayOptionsStore();
+  const { groupedBy, sortedBy, setGroupedBy, groupAndSortTickets } =
+    useTicketStore();
+
+  const handleFitler = async (value) => {
+    setGroupedBy(value);
+    if (value === "priority") {
+      groupAndSortTickets(value, sortedBy, "desc");
+    } else {
+      groupAndSortTickets(value, sortedBy, "asc");
+    }
+  };
 
   return (
     <Select
-      onValueChange={(e) => setDisplayOption(e.target.value)}
-      defaultValue={displayOption}
+      onValueChange={(e) => handleFitler(e)}
+      defaultValue={groupedBy}
     >
       <SelectTrigger className="w-[120px] dark:border-zinc-600 dark:bg-zinc-800 dark:hover:bg-zinc-700/70">
         <SelectValue placeholder="Display" />

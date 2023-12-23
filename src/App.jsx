@@ -7,11 +7,41 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "./components/ui/popover";
+import SortOptions from "./components/SortOptions";
+import { useEffect } from "react";
+import { getData } from "./services/api";
+import useTicketStore from "./hooks/useTicketStore";
+import Board from "./components/Board";
 
 function App() {
+  const { setTickets, setUsers, tickets, users, groupedTickets, groupAndSortTickets } = useTicketStore();
+
+
+
+  useEffect(() => {
+    const fetchDataFromApi = async () => {
+      try {
+        const data = await getData();
+        setTickets(data);
+        setUsers(data);
+        groupAndSortTickets('userId', 'title', 'asc')
+        // setLoading(false);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        // setError("Error fetching data. Please try again.");
+        // setLoading(false);
+      }
+    };
+
+    fetchDataFromApi();
+  }, [setTickets, setUsers, groupAndSortTickets]);
+
+  console.log(tickets)
+  console.log(users)
+
   return (
-    <div className="bg-slate-100 dark:bg-zinc-950 h-screen">
-      <div className="p-2 py-3 flex items-center justify-between bg-white dark:bg-zinc-800">
+    <div className="bg-slate-100 dark:bg-zinc-950 flex flex-col min-h-screen">
+      <section className="p-2 py-3 flex items-center justify-between bg-white dark:bg-zinc-800">
         <Popover>
           <PopoverTrigger asChild>
             <Button
@@ -30,13 +60,16 @@ function App() {
               </div>
               <div className="grid grid-cols-2 items-center">
                 Ordering
-                <FilterOptions />
+                <SortOptions />
               </div>
             </div>
           </PopoverContent>
         </Popover>
         <ModeToggle />
-      </div>
+      </section>
+      <main className="p-2">
+        <Board />
+      </main>
     </div>
   );
 }
