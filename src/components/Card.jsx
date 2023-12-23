@@ -1,8 +1,6 @@
 /* eslint-disable react/prop-types */
 
 import {
-  AlertOctagon,
-  AlertTriangle,
   Circle,
   CircleDashed,
   MoreHorizontal,
@@ -12,6 +10,9 @@ import {
   SignalMedium,
 } from "lucide-react";
 import useTicketStore from "../hooks/useTicketStore";
+import { useEffect, useState } from "react";
+import { Avatar, AvatarFallback } from "./ui/avatar";
+import { cn } from "../lib/utils";
 
 const getPriorityIcon = {
   0: <MoreHorizontal className="h-3 w-3 text-[#8d8d8d]" />,
@@ -41,7 +42,7 @@ const getStatusIcon = {
       fill="currentColor"
       strokeWidth="0"
       viewBox="0 0 24 24"
-      className="fill-yellow-500"
+      className="fill-yellow-400"
       height="1em"
       width="1em"
       xmlns="http://www.w3.org/2000/svg"
@@ -53,18 +54,65 @@ const getStatusIcon = {
   Todo: <Circle className="h-4 w-4 text-muted-foreground" />,
 };
 
+const getUser = (users, id) => {
+  const user = users.find((user) => user.id === id);
+  return user ? user : null;
+};
+
+const getNameInitials = (name) => {
+  const words = name.split(" "); // Split the name into words
+  const initials = words.map((word) => word.charAt(0)); // Get the first letter of each word
+  return initials.join("").toUpperCase(); // Join the initials and convert to uppercase
+};
+
+const getPriorityTitle = {
+  0: "No Priority",
+  1: "Low",
+  2: "Medium",
+  3: "High",
+  4: "Urgent",
+};
+
 const Card = ({ group }) => {
-  const { groupedTickets, groupedBy, sortedBy } = useTicketStore();
+  const [user, setUser] = useState(null);
+  const { groupedTickets, groupedBy, sortedBy, users } = useTicketStore();
+
+  useEffect(() => {
+    setUser(getUser(users, group));
+  }, [group, users]);
 
   return (
     <div className="w-full flex flex-col">
       <div className="flex justify-between items-center h-[8vh]">
         <div className="flex gap-2 justify-between items-center">
-          <div className="flex items-center h-3 w-3 rounded-full bg-blue-500 text-xs">
-            <div className="">AK</div>
+          <div className="flex items-center relative">
+            {groupedBy === "userId" && (
+              <>
+                <Avatar className="h-5 w-5">
+                  <AvatarFallback className="text-[9px] font-medium bg-violet-200">
+                    {user && getNameInitials(user.name)}
+                  </AvatarFallback>
+                </Avatar>
+                <div
+                  className={cn(
+                    "absolute w-[6px] h-[6px] bottom-0 right-0 rounded-full",
+                    user && user.available ? "bg-green-500" : "bg-yellow-500"
+                  )}
+                />
+              </>
+            )}
+            {groupedBy === "status" && getStatusIcon[group]}
           </div>
-          <span>{group}</span>
-          <span>count</span>
+          <span className="font-medium capitalize">
+            {groupedBy === "status"
+              ? group
+              : groupedBy === "priority"
+              ? getPriorityTitle[group]
+              : user?.name}
+          </span>
+          <span className="text-muted-foreground">
+            {groupedTickets[group].length}
+          </span>
         </div>
         <div className="flex gap-2 items-center">
           <Plus className="h-3 w-3 text-muted-foreground" />
@@ -83,13 +131,13 @@ const Card = ({ group }) => {
             </div>
 
             <div className="flex items-start gap-2">
-              {getStatusIcon[ticket.status]}
-              <p className="font-medium leading-3 text-sm w-fit">
+              {groupedBy !== "status" && getStatusIcon[ticket.status]}
+              <p className="font-medium leading-4 text-sm w-fit">
                 {ticket.title}
               </p>
             </div>
 
-            <div className="flex items-center gap-1 mt-1">
+            <div className="flex items-center gap-2 mt-1">
               <div className="w-fit border rounded-sm flex items-center justify-center p-1">
                 {getPriorityIcon[ticket.priority]}
               </div>
