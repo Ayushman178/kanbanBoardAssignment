@@ -8,3 +8,6 @@ npm install is a command used in Node.js and JavaScript projects to install depe
 
 ### `npm run dev`
 npm run dev is used to start a development server or initiate a development environment. It's often associated with running tasks that are helpful during the development phase of a project.
+
+Runs the app in the development mode.
+Open [http://localhost:5173/](http://localhost:5173/) to view it in your browser.
