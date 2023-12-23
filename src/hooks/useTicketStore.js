@@ -5,7 +5,7 @@ const useTicketStore = create((set) => ({
   users: [],
   groupedTickets: [],
   groupedBy: "userId",
-  sortedBy: "title",
+  sortedBy: "priority",
   setTickets: (data) => set({ tickets: data.tickets }),
   setUsers: (data) => set({ users: data.users }),
   setGroupedBy: (value) => set({ groupedBy: value}),
