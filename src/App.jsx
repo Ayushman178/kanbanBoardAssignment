@@ -66,7 +66,7 @@ function App() {
       <main className="p-2 flex-1">
         {!isLoading && <Board />}
         {isLoading && (
-          <div className="h-full flex items-center justify-center">
+          <div className="h-screen flex items-center justify-center">
             <Loader2 className="h-5 w-5 animate-spin" />
           </div>
         )}
